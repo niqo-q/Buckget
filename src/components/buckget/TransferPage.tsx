@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft, Wallet, PiggyBank, Sparkles, Bot, Zap, Check } from 'lucide-react';
 import { useWallet } from '../../App';
+import { BotlTransition } from './BotlTransition';
 
 interface TransferPageProps {
   onBack: () => void;
@@ -11,6 +12,7 @@ export function TransferPage({ onBack }: TransferPageProps) {
   const { wallet, updateWallet, addTransaction, buckets, updateBucket } = useWallet();
   const [splitPercentage, setSplitPercentage] = useState(70); // 70% Get, 30% Save
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showBotlTransition, setShowBotlTransition] = useState(false);
 
   const getAmount = Math.round((wallet.currentAvailable * splitPercentage) / 100);
   const saveAmount = wallet.currentAvailable - getAmount;
@@ -41,11 +43,17 @@ export function TransferPage({ onBack }: TransferPageProps) {
       });
     }
 
+    // Show first success screen for 500ms
     setShowSuccess(true);
     setTimeout(() => {
       setShowSuccess(false);
-      onBack();
-    }, 2000);
+      // Then show Botl transition for 2000ms
+      setShowBotlTransition(true);
+      setTimeout(() => {
+        setShowBotlTransition(false);
+        onBack();
+      }, 2000);
+    }, 500);
   };
 
   return (
@@ -249,6 +257,9 @@ export function TransferPage({ onBack }: TransferPageProps) {
           </motion.div>
         </motion.div>
       )}
+
+      {/* Botl Transition Animation */}
+      {showBotlTransition && <BotlTransition />}
     </div>
   );
 }

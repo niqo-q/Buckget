@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Send, Sparkles, TrendingUp, PiggyBank } from 'lucide-react';
 import { useWallet } from '../../App';
+import imgBotl from "figma:asset/38e23388481c05d1d91ff815e24a983b88386670.png";
 
 interface Message {
   id: string;
@@ -117,7 +118,9 @@ export function AIAgent() {
         animate={{ opacity: 1, y: 0 }}
       >
         <div className="flex items-center gap-3 mb-2">
-          <div className="text-4xl">🤖</div>
+          <div className="w-16 h-16 rounded-full overflow-hidden bg-white flex-shrink-0">
+            <img src={imgBotl} alt="Botl the Axolotl" className="w-full h-full object-cover" />
+          </div>
           <div>
             <h1
               className="text-3xl"
@@ -200,7 +203,7 @@ export function AIAgent() {
       </div>
 
       {/* Input Area */}
-      <div className="fixed bottom-20 left-0 right-0 max-w-md mx-auto px-6">
+      <div className="fixed bottom-24 left-0 right-0 max-w-md mx-auto px-6">
         {/* Recommended Prompts */}
         <div className="mb-3">
           <p className="text-white/60 text-xs mb-2 px-2" style={{ fontFamily: 'Inter, sans-serif' }}>

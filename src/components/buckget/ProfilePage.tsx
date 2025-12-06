@@ -92,7 +92,7 @@ export function ProfilePage() {
                 className="text-3xl text-[#0F172A]"
                 style={{ fontFamily: 'JetBrains Mono, monospace', fontWeight: 700 }}
               >
-                Dec '24
+                Dec 2024
               </p>
             </div>
           </div>

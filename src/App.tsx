@@ -140,7 +140,7 @@ export default function App() {
       {showLanding ? (
         <LandingPage onGetStarted={() => setShowLanding(false)} />
       ) : (
-        <div className="min-h-screen bg-[#2820FF] relative overflow-x-hidden">
+        <div className={`min-h-screen relative overflow-x-hidden ${currentPage === 'ai' ? 'bg-gradient-to-b from-[#3930f3] to-[#83d6e2]' : 'bg-[#2820FF]'}`}>
           <div className="max-w-md mx-auto min-h-screen relative pb-32">
             <AnimatePresence mode="wait">
               <motion.div

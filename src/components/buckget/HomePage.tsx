@@ -56,8 +56,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
     slidesToScroll: 1,
     arrows: false,
     autoplay: false,
-    centerMode: true,
-    centerPadding: '20px',
+    centerMode: false,
+    centerPadding: '0px',
   };
 
   const [aiMessage, setAiMessage] = useState('');
@@ -72,15 +72,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
       >
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-4xl mb-1" style={{ fontFamily: '"Momo Trust Display", sans-serif', fontWeight: 800 }}>
+            <h1 className="mb-1" style={{ fontFamily: '"Momo Trust Display", sans-serif', fontWeight: 800, fontSize: '48px', textTransform: 'uppercase', lineHeight: 1 }}>
               {getGreeting()}
             </h1>
             <p className="text-white/70" style={{ fontFamily: 'Inter, sans-serif' }}>
               {user.name}
             </p>
-          </div>
-          <div className="text-5xl">
-            🦎
           </div>
         </div>
       </motion.div>
@@ -225,9 +222,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4 }}
       >
-        <h3 className="text-sm text-white/70 mb-3" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-          QUICK ACTIONS
-        </h3>
         <motion.button
           onClick={() => onNavigate('buckets')}
           className="w-full bg-white rounded-2xl p-4 text-left hover:bg-white/90 transition-colors"
@@ -249,9 +243,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
       {/* Tier Cards Carousel */}
       <motion.div
         className="mt-8 mb-24"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
       >
         <h3 className="text-sm text-white/70 mb-4 px-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
           CHOOSE YOUR TIER
@@ -260,9 +251,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
           {tierCards.map((tier) => {
             const IconComponent = tier.icon;
             return (
-              <div key={tier.id} className="px-2">
+              <div key={tier.id} className="px-4">
                 <motion.div
-                  className={`${tier.color} ${tier.textColor} rounded-[2.5rem] p-6 shadow-xl`}
+                  className={`${tier.color} ${tier.textColor} rounded-[2.5rem] p-6`}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
