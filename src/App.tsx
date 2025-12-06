@@ -1,121 +1,175 @@
-import { useState, useEffect } from 'react';
-import { Welcome } from './components/onboarding/Welcome';
-import { KYC } from './components/onboarding/KYC';
-import { FileUpload } from './components/onboarding/FileUpload';
-import { HomePage } from './components/HomePage';
-import { TransferAmount } from './components/transfer/TransferAmount';
-import { TransferLoading } from './components/transfer/TransferLoading';
-import { ChatBot } from './components/ChatBot';
-import { Buckets } from './components/Buckets';
-import { Profile } from './components/Profile';
-import { Navigation } from './components/Navigation';
+import { useState, createContext, useContext } from 'react';
+import { motion } from 'motion/react';
+import { Home, ArrowLeftRight, Wallet, Bot, User } from 'lucide-react';
+import { AnimatePresence } from 'motion/react';
+import { HomePage } from './components/buckget/HomePage';
+import { TransferPage } from './components/buckget/TransferPage';
+import { BucketsPage } from './components/buckget/BucketsPage';
+import { AIAgent } from './components/buckget/AIAgent';
+import { ProfilePage } from './components/buckget/ProfilePage';
+import { LandingPage } from './components/buckget/LandingPage';
+import './styles/globals.css';
 
-type Page = 
-  | 'welcome'
-  | 'kyc'
-  | 'file-upload'
-  | 'home'
-  | 'transfer'
-  | 'transfer-loading'
-  | 'chatbot'
-  | 'buckets'
-  | 'profile';
+// Wallet Context
+interface Bucket {
+  id: string;
+  name: string;
+  target: number;
+  current: number;
+  emoji: string;
+  color: string;
+}
+
+interface Transaction {
+  id: string;
+  type: 'unlock' | 'stash' | 'transfer';
+  amount: number;
+  date: Date;
+  description: string;
+}
+
+interface WalletContextType {
+  user: { name: string; hourlyRate: number };
+  wallet: { currentAvailable: number; totalSaved: number };
+  buckets: Bucket[];
+  transactions: Transaction[];
+  updateWallet: (available: number, saved: number) => void;
+  addTransaction: (transaction: Omit<Transaction, 'id'>) => void;
+  updateBucket: (id: string, amount: number) => void;
+}
+
+const WalletContext = createContext<WalletContextType | undefined>(undefined);
+
+export const useWallet = () => {
+  const context = useContext(WalletContext);
+  if (!context) throw new Error('useWallet must be used within WalletProvider');
+  return context;
+};
+
+type Page = 'home' | 'transfer' | 'buckets' | 'ai' | 'profile';
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<Page>('welcome');
-  const [onboardingComplete, setOnboardingComplete] = useState(false);
-  const [userData, setUserData] = useState({
-    name: '',
-    ic: '',
-    monthlySalary: 2400,
-    amountSaved: 1850,
-    amountTransferred: 0,
+  const [showLanding, setShowLanding] = useState(true);
+  const [currentPage, setCurrentPage] = useState<Page>('home');
+  
+  const [user] = useState({ name: 'Alex', hourlyRate: 25.0 });
+  const [wallet, setWallet] = useState({
+    currentAvailable: 84.0,
+    totalSaved: 1250.0,
   });
+  const [buckets, setBuckets] = useState<Bucket[]>([
+    { id: '1', name: 'Emergency Fund', target: 5000, current: 450, emoji: '🛡️', color: 'bg-[#FF44EC]' },
+    { id: '2', name: 'Vacation', target: 3000, current: 820, emoji: '✈️', color: 'bg-white/10' },
+    { id: '3', name: 'New Phone', target: 2500, current: 1200, emoji: '📱', color: 'bg-white/10' },
+    { id: '4', name: 'Gaming Setup', target: 4000, current: 650, emoji: '🎮', color: 'bg-[#FF44EC]' },
+    { id: '5', name: 'House Deposit', target: 20000, current: 3400, emoji: '🏠', color: 'bg-white/10' },
+    { id: '6', name: 'Education', target: 6000, current: 2100, emoji: '📚', color: 'bg-white/10' },
+  ]);
+  const [transactions, setTransactions] = useState<Transaction[]>([
+    { id: '1', type: 'unlock', amount: 50, date: new Date('2024-12-05'), description: 'Wage unlock' },
+    { id: '2', type: 'stash', amount: 30, date: new Date('2024-12-04'), description: 'Auto save to Emergency' },
+  ]);
 
-  // Check if onboarding is complete
-  useEffect(() => {
-    const completed = localStorage.getItem('onboardingComplete');
-    if (completed === 'true') {
-      setOnboardingComplete(true);
-      setCurrentPage('home');
-    }
-  }, []);
-
-  const completeOnboarding = () => {
-    localStorage.setItem('onboardingComplete', 'true');
-    setOnboardingComplete(true);
-    setCurrentPage('home');
+  const updateWallet = (available: number, saved: number) => {
+    setWallet({ currentAvailable: available, totalSaved: saved });
   };
 
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'welcome':
-        return <Welcome onNext={() => setCurrentPage('kyc')} />;
-      case 'kyc':
-        return (
-          <KYC
-            onNext={(data) => {
-              setUserData({ ...userData, ...data });
-              setCurrentPage('file-upload');
-            }}
-            onBack={() => setCurrentPage('welcome')}
-          />
-        );
-      case 'file-upload':
-        return (
-          <FileUpload
-            onComplete={completeOnboarding}
-            onBack={() => setCurrentPage('kyc')}
-          />
-        );
-      case 'home':
-        return (
-          <HomePage
-            userData={userData}
-            onTransfer={() => setCurrentPage('transfer')}
-          />
-        );
-      case 'transfer':
-        return (
-          <TransferAmount
-            onConfirm={(amount) => {
-              setUserData({
-                ...userData,
-                amountTransferred: userData.amountTransferred + amount,
-              });
-              setCurrentPage('transfer-loading');
-            }}
-            onBack={() => setCurrentPage('home')}
-          />
-        );
-      case 'transfer-loading':
-        return (
-          <TransferLoading
-            onComplete={() => setCurrentPage('home')}
-          />
-        );
-      case 'chatbot':
-        return <ChatBot />;
-      case 'buckets':
-        return <Buckets />;
-      case 'profile':
-        return <Profile userData={userData} />;
-      default:
-        return <HomePage userData={userData} onTransfer={() => setCurrentPage('transfer')} />;
-    }
+  const addTransaction = (transaction: Omit<Transaction, 'id'>) => {
+    setTransactions([
+      { ...transaction, id: Date.now().toString() },
+      ...transactions,
+    ]);
   };
+
+  const updateBucket = (id: string, amount: number) => {
+    setBuckets(buckets.map(b => 
+      b.id === id ? { ...b, current: b.current + amount } : b
+    ));
+  };
+
+  const walletContextValue: WalletContextType = {
+    user,
+    wallet,
+    buckets,
+    transactions,
+    updateWallet,
+    addTransaction,
+    updateBucket,
+  };
+
+  const navItems = [
+    { id: 'home' as Page, icon: Home, label: 'Home' },
+    { id: 'transfer' as Page, icon: ArrowLeftRight, label: 'Transfer' },
+    { id: 'buckets' as Page, icon: Wallet, label: 'Buckets' },
+    { id: 'ai' as Page, icon: Bot, label: 'AI' },
+    { id: 'profile' as Page, icon: User, label: 'Profile' },
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-600 to-indigo-800">
-      <div className="max-w-md mx-auto min-h-screen bg-white">
-        {renderPage()}
-        {onboardingComplete && currentPage !== 'transfer-loading' && (
-          <Navigation
-            currentPage={currentPage}
-            onNavigate={setCurrentPage}
-          />
-        )}
-      </div>
-    </div>
+    <WalletContext.Provider value={walletContextValue}>
+      <style>
+        {`
+          @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&family=Inter:wght@500;600&display=swap');
+          @import url('https://api.fontshare.com/v2/css?f[]=momo-trust-display@800&display=swap');
+        `}
+      </style>
+
+      {showLanding ? (
+        <LandingPage onGetStarted={() => setShowLanding(false)} />
+      ) : (
+        <div className="min-h-screen bg-[#2820FF] relative overflow-x-hidden">
+          <div className="max-w-md mx-auto min-h-screen relative pb-32">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentPage}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                {currentPage === 'home' && <HomePage onNavigate={setCurrentPage} />}
+                {currentPage === 'transfer' && <TransferPage onBack={() => setCurrentPage('home')} />}
+                {currentPage === 'buckets' && <BucketsPage />}
+                {currentPage === 'ai' && <AIAgent />}
+                {currentPage === 'profile' && <ProfilePage />}
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Floating Pill Navigation */}
+            <motion.nav
+              className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50"
+              initial={{ y: 100 }}
+              animate={{ y: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            >
+              <div className="bg-white/20 backdrop-blur-lg rounded-full px-6 py-3 border border-white/20 shadow-2xl">
+                <div className="flex items-center gap-2">
+                  {navItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = currentPage === item.id;
+                    
+                    return (
+                      <motion.button
+                        key={item.id}
+                        onClick={() => setCurrentPage(item.id)}
+                        className={`relative px-4 py-2 rounded-full transition-all ${
+                          isActive
+                            ? 'bg-[#FEFF09] text-[#0F172A]'
+                            : 'text-white hover:bg-white/10'
+                        }`}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <Icon className="w-5 h-5" />
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              </div>
+            </motion.nav>
+          </div>
+        </div>
+      )}
+    </WalletContext.Provider>
   );
 }
