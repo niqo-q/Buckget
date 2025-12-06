@@ -1,4 +1,5 @@
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
+import { useState, useEffect } from 'react';
 import { Flame } from 'lucide-react';
 import svgPaths from '../imports/svg-8qx1l0lvzy';
 
@@ -7,6 +8,21 @@ interface LandingPageProps {
 }
 
 export function LandingPage({ onGetStarted }: LandingPageProps) {
+  const features = [
+    'Get paid early',
+    'Smart savings buckets',
+    'AI-powered finance tips'
+  ];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % features.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [features.length]);
+
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* Imported Background Design */}
@@ -233,27 +249,41 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
             Buck Up with BuckGet
           </motion.p>
 
-          {/* Features */}
+          {/* Features Carousel */}
           <motion.div
-            className="space-y-4 mb-16 w-full max-w-sm"
+            className="mb-16 w-full max-w-sm h-[60px] relative"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
           >
-            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-4">
-              <p className="text-white" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                Get paid early
-              </p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-4">
-              <p className="text-white" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                Smart savings buckets
-              </p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-4">
-              <p className="text-white" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                AI-powered finance tips
-              </p>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentIndex}
+                className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-4 absolute inset-0 flex items-center justify-center"
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.5 }}
+              >
+                <p className="text-white" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                  {features[currentIndex]}
+                </p>
+              </motion.div>
+            </AnimatePresence>
+            
+            {/* Dots Indicator */}
+            <div className="flex justify-center gap-2 mt-4 absolute -bottom-8 left-1/2 -translate-x-1/2">
+              {features.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentIndex(index)}
+                  className={`transition-all ${
+                    index === currentIndex
+                      ? 'w-6 h-2 bg-[#FEFF09] rounded-full'
+                      : 'w-2 h-2 bg-white/30 rounded-full'
+                  }`}
+                />
+              ))}
             </div>
           </motion.div>
         </div>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { ArrowLeft, Upload, FileText, CheckCircle2, X } from 'lucide-react';
 
 interface FileUploadProps {
@@ -66,46 +67,65 @@ export function FileUpload({ onComplete, onBack }: FileUploadProps) {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="p-6 pb-32">
-        <button
+    <div className="min-h-screen bg-[#2820FF]">
+      <div className="max-w-md mx-auto p-6 pb-32">
+        <motion.button
           onClick={onBack}
-          className="flex items-center gap-2 text-gray-600 mb-6"
+          className="flex items-center gap-2 text-white/70 hover:text-white mb-6"
+          style={{ fontFamily: 'Inter, sans-serif' }}
+          whileHover={{ x: -4 }}
+          whileTap={{ scale: 0.95 }}
         >
           <ArrowLeft className="w-5 h-5" />
           Back
-        </button>
+        </motion.button>
 
-        <div className="mb-8">
-          <h1 className="text-3xl mb-2">Upload Documents</h1>
-          <p className="text-gray-600">
+        <motion.div
+          className="mb-8"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <h1
+            className="text-5xl text-white mb-3"
+            style={{ fontFamily: '"Momo Trust Display", sans-serif', fontWeight: 800 }}
+          >
+            UPLOAD DOCS
+          </h1>
+          <p className="text-white/70" style={{ fontFamily: 'Inter, sans-serif' }}>
             Please upload your monthly settlement or payslip to verify your income
           </p>
-        </div>
+        </motion.div>
 
+        {/* Progress Bar */}
         <div className="flex gap-2 mb-8">
-          <div className="flex-1 h-1 bg-indigo-600 rounded-full"></div>
-          <div className="flex-1 h-1 bg-indigo-600 rounded-full"></div>
+          <div className="flex-1 h-1 bg-[#FEFF09] rounded-full"></div>
+          <div className="flex-1 h-1 bg-[#FEFF09] rounded-full"></div>
         </div>
 
-        <div
-          className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors ${
+        <motion.div
+          className={`border-2 border-dashed rounded-[2.5rem] p-8 text-center transition-all ${
             dragActive
-              ? 'border-indigo-600 bg-indigo-50'
-              : 'border-gray-300 bg-gray-50'
+              ? 'border-[#FEFF09] bg-[#FEFF09]/10'
+              : 'border-white/30 bg-white/5 backdrop-blur-md'
           }`}
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
           onDragOver={handleDrag}
           onDrop={handleDrop}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.1 }}
         >
-          <div className="w-16 h-16 bg-indigo-100 rounded-full mx-auto flex items-center justify-center mb-4">
-            <Upload className="w-8 h-8 text-indigo-600" />
+          <div className="w-16 h-16 bg-[#FEFF09] rounded-full mx-auto flex items-center justify-center mb-4">
+            <Upload className="w-8 h-8 text-[#0F172A]" />
           </div>
-          <h3 className="mb-2">
+          <h3
+            className="text-white mb-2"
+            style={{ fontFamily: '"Momo Trust Display", sans-serif', fontWeight: 800 }}
+          >
             Drop your files here
           </h3>
-          <p className="text-gray-600 text-sm mb-4">
+          <p className="text-white/60 text-sm mb-4" style={{ fontFamily: 'Inter, sans-serif' }}>
             or click to browse
           </p>
           <input
@@ -118,49 +138,69 @@ export function FileUpload({ onComplete, onBack }: FileUploadProps) {
           />
           <label
             htmlFor="file-upload"
-            className="inline-block px-6 py-3 bg-indigo-600 text-white rounded-full cursor-pointer hover:bg-indigo-700 transition-colors"
+            className="inline-block px-6 py-3 bg-[#FF44EC] text-white rounded-full cursor-pointer hover:bg-[#FF44EC]/90 transition-colors"
+            style={{ fontFamily: '"Momo Trust Display", sans-serif', fontWeight: 800 }}
           >
-            Select Files
+            SELECT FILES
           </label>
-          <p className="text-xs text-gray-500 mt-4">
+          <p className="text-xs text-white/50 mt-4" style={{ fontFamily: 'Inter, sans-serif' }}>
             Supported formats: PDF, JPG, PNG (Max 10MB)
           </p>
-        </div>
+        </motion.div>
 
         {files.length > 0 && (
-          <div className="mt-6 space-y-3">
-            <h3 className="text-sm text-gray-600">Uploaded Files</h3>
-            {files.map((file) => (
-              <div
+          <motion.div
+            className="mt-6 space-y-3"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <h3
+              className="text-sm text-white/70"
+              style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+            >
+              Uploaded Files
+            </h3>
+            {files.map((file, index) => (
+              <motion.div
                 key={file.id}
-                className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-xl"
+                className="flex items-center gap-3 p-4 bg-[#FEFF09]/10 backdrop-blur-md border border-[#FEFF09]/30 rounded-3xl"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
               >
-                <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
-                <FileText className="w-5 h-5 text-gray-600 flex-shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-[#FEFF09] flex-shrink-0" />
+                <FileText className="w-5 h-5 text-white flex-shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm truncate">{file.name}</p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-sm text-white truncate" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                    {file.name}
+                  </p>
+                  <p className="text-xs text-white/50" style={{ fontFamily: 'Inter, sans-serif' }}>
                     {formatFileSize(file.size)}
                   </p>
                 </div>
-                <button
+                <motion.button
                   onClick={() => removeFile(file.id)}
-                  className="p-1 hover:bg-green-100 rounded-full"
+                  className="p-1 hover:bg-white/10 rounded-full"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
                 >
-                  <X className="w-4 h-4 text-gray-600" />
-                </button>
-              </div>
+                  <X className="w-4 h-4 text-white" />
+                </motion.button>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
 
-        <button
+        <motion.button
           onClick={onComplete}
           disabled={files.length === 0}
-          className="fixed bottom-6 left-6 right-6 max-w-md mx-auto bg-indigo-600 text-white py-4 rounded-full hover:bg-indigo-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+          className="fixed bottom-6 left-6 right-6 max-w-md mx-auto bg-[#FEFF09] text-[#0F172A] py-5 rounded-full transition-all disabled:bg-white/20 disabled:text-white/40 disabled:cursor-not-allowed"
+          style={{ fontFamily: '"Momo Trust Display", sans-serif', fontWeight: 800 }}
+          whileHover={files.length > 0 ? { scale: 1.02 } : {}}
+          whileTap={files.length > 0 ? { scale: 0.98 } : {}}
         >
-          Complete Setup
-        </button>
+          COMPLETE SETUP
+        </motion.button>
       </div>
     </div>
   );

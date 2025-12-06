@@ -10,7 +10,7 @@ export function ProfilePage() {
       title: 'ACCOUNT',
       items: [
         { icon: User, label: 'Personal Information', value: user.name },
-        { icon: Mail, label: 'Email', value: 'alex@buckget.com' },
+        { icon: Mail, label: 'Email', value: 'tao@buckget.com' },
         { icon: Phone, label: 'Phone Number', value: '+60 12-345 6789' },
         { icon: CreditCard, label: 'Payment Methods', value: '2 cards' },
       ],

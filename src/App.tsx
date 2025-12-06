@@ -8,6 +8,8 @@ import { BucketsPage } from './components/buckget/BucketsPage';
 import { AIAgent } from './components/buckget/AIAgent';
 import { ProfilePage } from './components/buckget/ProfilePage';
 import { LandingPage } from './components/buckget/LandingPage';
+import { KYC } from './components/onboarding/KYC';
+import { FileUpload } from './components/onboarding/FileUpload';
 import './styles/globals.css';
 
 // Wallet Context
@@ -50,12 +52,13 @@ export const useWallet = () => {
 };
 
 type Page = 'home' | 'transfer' | 'buckets' | 'ai' | 'profile';
+type OnboardingStep = 'landing' | 'kyc' | 'fileUpload' | 'complete';
 
 export default function App() {
-  const [showLanding, setShowLanding] = useState(true);
+  const [onboardingStep, setOnboardingStep] = useState<OnboardingStep>('landing');
   const [currentPage, setCurrentPage] = useState<Page>('home');
   
-  const [user] = useState({ name: 'Alex', hourlyRate: 25.0 });
+  const [user] = useState({ name: 'Tao', hourlyRate: 25.0 });
   const [wallet, setWallet] = useState({
     currentAvailable: 84.0,
     totalSaved: 1250.0,
@@ -137,9 +140,19 @@ export default function App() {
         `}
       </style>
 
-      {showLanding ? (
-        <LandingPage onGetStarted={() => setShowLanding(false)} />
-      ) : (
+      {onboardingStep === 'landing' ? (
+        <LandingPage onGetStarted={() => setOnboardingStep('kyc')} />
+      ) : onboardingStep === 'kyc' ? (
+        <KYC 
+          onNext={() => setOnboardingStep('fileUpload')} 
+          onBack={() => setOnboardingStep('landing')}
+        />
+      ) : onboardingStep === 'fileUpload' ? (
+        <FileUpload 
+          onComplete={() => setOnboardingStep('complete')} 
+          onBack={() => setOnboardingStep('kyc')}
+        />
+      ) : onboardingStep === 'complete' ? (
         <div className={`min-h-screen relative overflow-x-hidden ${currentPage === 'ai' ? 'bg-gradient-to-b from-[#3930f3] to-[#83d6e2]' : 'bg-[#2820FF]'}`}>
           <div className="max-w-md mx-auto min-h-screen relative pb-32">
             <AnimatePresence mode="wait">
@@ -192,7 +205,7 @@ export default function App() {
             </motion.nav>
           </div>
         </div>
-      )}
+      ) : null}
     </WalletContext.Provider>
   );
 }
