@@ -19,7 +19,7 @@ export function AIAgent() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: `Hi! I'm Axel, your AI financial advisor 🦎 \n\nYou have $${wallet.currentAvailable.toFixed(2)} available. Would you like me to suggest an optimal split?`,
+      text: `Hi! I'm Botl, your AI financial advisor 🤖 \n\nYou have $${wallet.currentAvailable.toFixed(2)} available. Would you like me to suggest an optimal split?`,
       sender: 'ai',
     },
   ]);
@@ -104,6 +104,8 @@ export function AIAgent() {
     'Suggest a split',
     'Show my goals',
     'Budget tips',
+    'How much should I save?',
+    'Track my spending',
   ];
 
   return (
@@ -115,13 +117,13 @@ export function AIAgent() {
         animate={{ opacity: 1, y: 0 }}
       >
         <div className="flex items-center gap-3 mb-2">
-          <div className="text-4xl">🦎</div>
+          <div className="text-4xl">🤖</div>
           <div>
             <h1
               className="text-3xl"
               style={{ fontFamily: '"Momo Trust Display", sans-serif', fontWeight: 800 }}
             >
-              Axel AI
+              Botl AI
             </h1>
             <p className="text-white/70 text-sm" style={{ fontFamily: 'Inter, sans-serif' }}>
               Your financial copilot
@@ -197,54 +199,29 @@ export function AIAgent() {
         </div>
       </div>
 
-      {/* Quick Stats */}
-      <motion.div
-        className="fixed bottom-32 left-0 right-0 max-w-md mx-auto px-6"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-[#FEFF09]" />
-              <div>
-                <p className="text-white/70 text-xs">Available</p>
-                <p className="text-sm" style={{ fontFamily: 'JetBrains Mono, monospace', fontWeight: 700 }}>
-                  ${wallet.currentAvailable}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <PiggyBank className="w-5 h-5 text-[#FF44EC]" />
-              <div>
-                <p className="text-white/70 text-xs">Saved</p>
-                <p className="text-sm" style={{ fontFamily: 'JetBrains Mono, monospace', fontWeight: 700 }}>
-                  ${wallet.totalSaved}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-
       {/* Input Area */}
       <div className="fixed bottom-20 left-0 right-0 max-w-md mx-auto px-6">
-        {/* Quick Actions */}
-        <div className="flex gap-2 mb-3 overflow-x-auto pb-2 scrollbar-hide">
-          {quickActions.map((action, index) => (
-            <motion.button
-              key={index}
-              onClick={() => {
-                setInput(action);
-              }}
-              className="flex-shrink-0 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-white text-sm rounded-full hover:bg-white/20 transition-colors"
-              style={{ fontFamily: 'Inter, sans-serif' }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              {action}
-            </motion.button>
-          ))}
+        {/* Recommended Prompts */}
+        <div className="mb-3">
+          <p className="text-white/60 text-xs mb-2 px-2" style={{ fontFamily: 'Inter, sans-serif' }}>
+            💡 Try asking:
+          </p>
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+            {quickActions.map((action, index) => (
+              <motion.button
+                key={index}
+                onClick={() => {
+                  setInput(action);
+                }}
+                className="flex-shrink-0 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-white text-sm rounded-full hover:bg-white/20 transition-colors"
+                style={{ fontFamily: 'Inter, sans-serif' }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {action}
+              </motion.button>
+            ))}
+          </div>
         </div>
 
         {/* Input */}
@@ -254,7 +231,7 @@ export function AIAgent() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-            placeholder="Ask Axel anything..."
+            placeholder="Ask Botl anything..."
             className="flex-1 px-4 py-2 bg-transparent text-white placeholder-white/50 focus:outline-none"
             style={{ fontFamily: 'Inter, sans-serif' }}
           />

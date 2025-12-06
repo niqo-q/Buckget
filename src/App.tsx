@@ -16,7 +16,7 @@ interface Bucket {
   name: string;
   target: number;
   current: number;
-  emoji: string;
+  icon: string;
   color: string;
 }
 
@@ -36,6 +36,9 @@ interface WalletContextType {
   updateWallet: (available: number, saved: number) => void;
   addTransaction: (transaction: Omit<Transaction, 'id'>) => void;
   updateBucket: (id: string, amount: number) => void;
+  addBucket: (bucket: Omit<Bucket, 'id'>) => void;
+  deleteBucket: (id: string) => void;
+  updateBucketDetails: (id: string, updates: Partial<Omit<Bucket, 'id'>>) => void;
 }
 
 const WalletContext = createContext<WalletContextType | undefined>(undefined);
@@ -58,12 +61,12 @@ export default function App() {
     totalSaved: 1250.0,
   });
   const [buckets, setBuckets] = useState<Bucket[]>([
-    { id: '1', name: 'Emergency Fund', target: 5000, current: 450, emoji: '🛡️', color: 'bg-[#FF44EC]' },
-    { id: '2', name: 'Vacation', target: 3000, current: 820, emoji: '✈️', color: 'bg-white/10' },
-    { id: '3', name: 'New Phone', target: 2500, current: 1200, emoji: '📱', color: 'bg-white/10' },
-    { id: '4', name: 'Gaming Setup', target: 4000, current: 650, emoji: '🎮', color: 'bg-[#FF44EC]' },
-    { id: '5', name: 'House Deposit', target: 20000, current: 3400, emoji: '🏠', color: 'bg-white/10' },
-    { id: '6', name: 'Education', target: 6000, current: 2100, emoji: '📚', color: 'bg-white/10' },
+    { id: '1', name: 'Emergency Fund', target: 5000, current: 450, icon: 'Shield', color: 'bg-[#FF44EC]' },
+    { id: '2', name: 'Vacation', target: 3000, current: 820, icon: 'Plane', color: 'bg-white/10' },
+    { id: '3', name: 'New Phone', target: 2500, current: 1200, icon: 'Smartphone', color: 'bg-white/10' },
+    { id: '4', name: 'Gaming Setup', target: 4000, current: 650, icon: 'Gamepad2', color: 'bg-[#FF44EC]' },
+    { id: '5', name: 'House Deposit', target: 20000, current: 3400, icon: 'Home', color: 'bg-white/10' },
+    { id: '6', name: 'Education', target: 6000, current: 2100, icon: 'BookOpen', color: 'bg-white/10' },
   ]);
   const [transactions, setTransactions] = useState<Transaction[]>([
     { id: '1', type: 'unlock', amount: 50, date: new Date('2024-12-05'), description: 'Wage unlock' },
@@ -87,6 +90,23 @@ export default function App() {
     ));
   };
 
+  const addBucket = (bucket: Omit<Bucket, 'id'>) => {
+    setBuckets([
+      { ...bucket, id: Date.now().toString() },
+      ...buckets,
+    ]);
+  };
+
+  const deleteBucket = (id: string) => {
+    setBuckets(buckets.filter(b => b.id !== id));
+  };
+
+  const updateBucketDetails = (id: string, updates: Partial<Omit<Bucket, 'id'>>) => {
+    setBuckets(buckets.map(b => 
+      b.id === id ? { ...b, ...updates } : b
+    ));
+  };
+
   const walletContextValue: WalletContextType = {
     user,
     wallet,
@@ -95,6 +115,9 @@ export default function App() {
     updateWallet,
     addTransaction,
     updateBucket,
+    addBucket,
+    deleteBucket,
+    updateBucketDetails,
   };
 
   const navItems = [

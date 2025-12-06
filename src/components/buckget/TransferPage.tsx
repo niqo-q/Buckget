@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { ArrowLeft, Wallet, PiggyBank, Sparkles } from 'lucide-react';
+import { ArrowLeft, Wallet, PiggyBank, Sparkles, Bot, Zap, Check } from 'lucide-react';
 import { useWallet } from '../../App';
 
 interface TransferPageProps {
@@ -68,7 +68,7 @@ export function TransferPage({ onBack }: TransferPageProps) {
           className="text-5xl"
           style={{ fontFamily: '"Momo Trust Display", sans-serif', fontWeight: 800 }}
         >
-          UNLOCK & STASH
+          BUCK & SAVE
         </h1>
         <p className="text-white/70 mt-2" style={{ fontFamily: 'Inter, sans-serif' }}>
           Split your ${wallet.currentAvailable.toFixed(2)} between cash and savings
@@ -119,7 +119,7 @@ export function TransferPage({ onBack }: TransferPageProps) {
                 <PiggyBank className={`w-8 h-8 ${splitPercentage < 50 ? 'text-white' : 'text-[#0F172A]/50'}`} />
               </div>
               <p className="text-[#0F172A]/70 text-sm mb-2" style={{ fontFamily: 'Inter, sans-serif' }}>
-                STASH
+                SAVE
               </p>
               <p
                 className="text-4xl text-[#0F172A]"
@@ -168,11 +168,11 @@ export function TransferPage({ onBack }: TransferPageProps) {
 
             {/* Percentage Labels */}
             <div className="flex justify-between mt-3 text-sm text-[#0F172A]/50">
-              <span>0%</span>
+              <span style={{ fontFamily: 'JetBrains Mono, monospace' }}>$0</span>
               <span style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-                {splitPercentage}%
+                ${splitPercentage > 50 ? getAmount.toFixed(2) : saveAmount.toFixed(2)}
               </span>
-              <span>100%</span>
+              <span style={{ fontFamily: 'JetBrains Mono, monospace' }}>${wallet.currentAvailable.toFixed(2)}</span>
             </div>
           </div>
         </div>
@@ -185,7 +185,9 @@ export function TransferPage({ onBack }: TransferPageProps) {
           transition={{ delay: 0.2 }}
         >
           <div className="flex items-start gap-3">
-            <div className="text-2xl">🦎</div>
+            <div className="w-10 h-10 bg-[#FF44EC] rounded-full flex items-center justify-center flex-shrink-0">
+              <Bot className="w-6 h-6 text-white" />
+            </div>
             <div className="flex-1">
               <p className="text-sm text-white/70 mb-1" style={{ fontFamily: 'Inter, sans-serif' }}>
                 Axel suggests:
@@ -201,12 +203,19 @@ export function TransferPage({ onBack }: TransferPageProps) {
         {/* CTA Button */}
         <motion.button
           onClick={handleSecureFunds}
-          className="w-full bg-[#FEFF09] text-[#0F172A] py-6 rounded-full text-xl"
+          className="w-full bg-[#FEFF09] text-[#0F172A] py-6 rounded-full text-xl flex items-center justify-center gap-2"
           style={{ fontFamily: '"Momo Trust Display", sans-serif', fontWeight: 800 }}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
-          {showSuccess ? '✓ FUNDS SECURED!' : 'SECURE FUNDS'}
+          {showSuccess ? (
+            <>
+              <Check className="w-6 h-6" />
+              FUNDS SECURED!
+            </>
+          ) : (
+            'BUCK UP'
+          )}
         </motion.button>
       </motion.div>
 
@@ -225,11 +234,11 @@ export function TransferPage({ onBack }: TransferPageProps) {
             className="text-center"
           >
             <motion.div
-              className="text-8xl mb-4"
+              className="mb-4 flex items-center justify-center"
               animate={{ rotate: [0, 10, -10, 0] }}
               transition={{ duration: 0.5, repeat: 3 }}
             >
-              ⚡
+              <Zap className="w-32 h-32 text-[#FEFF09]" />
             </motion.div>
             <h2
               className="text-4xl text-white"

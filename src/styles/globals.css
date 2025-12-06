@@ -200,3 +200,73 @@ html {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+/* React Slick Carousel Styles */
+.slick-slider {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  user-select: none;
+  touch-action: pan-y;
+}
+
+.slick-list {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+.slick-track {
+  position: relative;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: stretch;
+}
+
+.slick-slide {
+  display: flex;
+  height: auto;
+  min-height: 1px;
+}
+
+.slick-slide > div {
+  width: 100%;
+}
+
+.slick-dots {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.slick-dots li {
+  margin: 0;
+  padding: 0;
+}
+
+.slick-dots li button {
+  display: block;
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  font-size: 0;
+  line-height: 0;
+  transition: all 0.3s ease;
+}
+
+.slick-dots li.slick-active button {
+  width: 24px;
+  border-radius: 4px;
+  background-color: #FEFF09;
+}

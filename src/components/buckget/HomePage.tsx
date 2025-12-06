@@ -1,9 +1,11 @@
 import { motion } from 'motion/react';
-import { ArrowRight, TrendingUp, Zap } from 'lucide-react';
+import { ArrowRight, TrendingUp, Zap, Crown, Shield, Rocket, Send } from 'lucide-react';
 import { useWallet } from '../../App';
+import Slider from 'react-slick';
+import { useState } from 'react';
 
 interface HomePageProps {
-  onNavigate: (page: 'transfer') => void;
+  onNavigate: (page: 'transfer' | 'buckets' | 'ai') => void;
 }
 
 export function HomePage({ onNavigate }: HomePageProps) {
@@ -15,6 +17,50 @@ export function HomePage({ onNavigate }: HomePageProps) {
     if (hour < 18) return 'Good Afternoon';
     return 'Good Evening';
   };
+
+  const tierCards = [
+    {
+      id: 1,
+      name: 'Buck Up, Power Save',
+      tagline: 'Limit your spending to supercharge a 20% save.',
+      savePercent: 20,
+      color: 'bg-white',
+      icon: Rocket,
+      textColor: 'text-[#0F172A]',
+    },
+    {
+      id: 2,
+      name: 'Buck Up, Steady Flow',
+      tagline: 'Secure your spending with a moderate 10% save.',
+      savePercent: 10,
+      color: 'bg-[#FF44EC]',
+      icon: Shield,
+      textColor: 'text-white',
+    },
+    {
+      id: 3,
+      name: 'Buck Up, Total Freedom',
+      tagline: 'Enjoy your full spending power with a light 5% save.',
+      savePercent: 5,
+      color: 'bg-[#FEFF09]',
+      icon: Crown,
+      textColor: 'text-[#0F172A]',
+    },
+  ];
+
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    arrows: false,
+    autoplay: false,
+    centerMode: true,
+    centerPadding: '20px',
+  };
+
+  const [aiMessage, setAiMessage] = useState('');
 
   return (
     <div className="min-h-screen p-6 text-white">
@@ -39,6 +85,44 @@ export function HomePage({ onNavigate }: HomePageProps) {
         </div>
       </motion.div>
 
+      {/* Ask Botl AI Chatbox */}
+      <motion.div
+        className="mb-6"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.05 }}
+      >
+        <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-[2.5rem] p-4">
+          <div className="flex items-center gap-3">
+            <input
+              type="text"
+              value={aiMessage}
+              onChange={(e) => setAiMessage(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' && aiMessage.trim()) {
+                  onNavigate('ai');
+                }
+              }}
+              placeholder="Ask Botl AI anything..."
+              className="flex-1 bg-transparent text-white placeholder-white/50 outline-none"
+              style={{ fontFamily: 'Inter, sans-serif' }}
+            />
+            <motion.button
+              onClick={() => {
+                if (aiMessage.trim()) {
+                  onNavigate('ai');
+                }
+              }}
+              className="bg-[#FEFF09] text-[#0F172A] p-3 rounded-full"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <Send className="w-5 h-5" />
+            </motion.button>
+          </div>
+        </div>
+      </motion.div>
+
       {/* Hero Card - Available Wages */}
       <motion.div
         className="bg-white rounded-[2.5rem] p-6 mb-6"
@@ -47,7 +131,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
         transition={{ delay: 0.1 }}
       >
         <div className="flex items-center gap-2 mb-2">
-          <TrendingUp className="w-5 h-5 text-[#FEFF09]" />
+          <TrendingUp className="w-5 h-5 text-[#2820FF]" />
           <p className="text-[#0F172A]/70 text-sm" style={{ fontFamily: 'Inter, sans-serif' }}>
             Available Wages
           </p>
@@ -110,12 +194,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
       >
-        <div className="bg-white rounded-3xl p-5">
-          <p className="text-[#0F172A]/70 text-sm mb-2" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div className="bg-white rounded-3xl p-5 break-words">
+          <p className="text-[#0F172A]/70 text-sm mb-2 break-words" style={{ fontFamily: 'Inter, sans-serif' }}>
             Total Saved
           </p>
           <p
-            className="text-3xl text-[#0F172A]"
+            className="text-3xl text-[#0F172A] break-words"
             style={{ fontFamily: 'JetBrains Mono, monospace', fontWeight: 700 }}
           >
             ${wallet.totalSaved.toFixed(2)}
@@ -145,6 +229,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
           QUICK ACTIONS
         </h3>
         <motion.button
+          onClick={() => onNavigate('buckets')}
           className="w-full bg-white rounded-2xl p-4 text-left hover:bg-white/90 transition-colors"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
@@ -159,21 +244,66 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <ArrowRight className="w-5 h-5 text-[#0F172A]" />
           </div>
         </motion.button>
-        <motion.button
-          className="w-full bg-white rounded-2xl p-4 text-left hover:bg-white/90 transition-colors"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="mb-1 text-[#0F172A]" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                Ask AI Agent
-              </p>
-              <p className="text-[#0F172A]/60 text-sm">Get financial advice from Axel</p>
-            </div>
-            <ArrowRight className="w-5 h-5 text-[#0F172A]" />
-          </div>
-        </motion.button>
+      </motion.div>
+
+      {/* Tier Cards Carousel */}
+      <motion.div
+        className="mt-8 mb-24"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5 }}
+      >
+        <h3 className="text-sm text-white/70 mb-4 px-1" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+          CHOOSE YOUR TIER
+        </h3>
+        <Slider {...sliderSettings}>
+          {tierCards.map((tier) => {
+            const IconComponent = tier.icon;
+            return (
+              <div key={tier.id} className="px-2">
+                <motion.div
+                  className={`${tier.color} ${tier.textColor} rounded-[2.5rem] p-6 shadow-xl`}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <IconComponent className={`w-8 h-8 ${tier.textColor}`} />
+                      <span
+                        className={`text-sm ${tier.textColor === 'text-white' ? 'text-white/80' : 'text-[#0F172A]/70'}`}
+                        style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
+                      >
+                        TIER {tier.id}
+                      </span>
+                    </div>
+                    <div
+                      className={`px-4 py-2 rounded-full ${tier.textColor === 'text-white' ? 'bg-white/20' : 'bg-[#0F172A]/10'}`}
+                    >
+                      <span
+                        className={`${tier.textColor}`}
+                        style={{ fontFamily: 'JetBrains Mono, monospace', fontWeight: 700 }}
+                      >
+                        {tier.savePercent}% Save
+                      </span>
+                    </div>
+                  </div>
+                  <h3
+                    className={`text-2xl mb-3 ${tier.textColor}`}
+                    style={{ fontFamily: '"Momo Trust Display", sans-serif', fontWeight: 800 }}
+                  >
+                    {tier.name}
+                  </h3>
+                  <p
+                    className={`${tier.textColor === 'text-white' ? 'text-white/80' : 'text-[#0F172A]/70'}`}
+                    style={{ fontFamily: 'Inter, sans-serif' }}
+                  >
+                    {tier.tagline}
+                  </p>
+                </motion.div>
+              </div>
+            );
+          })}
+        </Slider>
       </motion.div>
     </div>
   );
